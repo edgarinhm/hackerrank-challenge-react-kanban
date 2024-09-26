@@ -58,3 +58,6 @@ bash npm start
 ```bash
 bash npm test
 ```
+
+**DEMO**
+[hackerrank-challenge-react-kanban](https://edgarinhm.github.io/hackerrank-challenge-react-kanban/)
