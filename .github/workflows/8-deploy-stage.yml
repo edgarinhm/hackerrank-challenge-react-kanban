@@ -1,0 +1,44 @@
+name: 80 Deploy Stage
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/1-build.yml
+  # Deploy Job
+  deploy-stage:
+    # Add a dependency to the build job
+    needs: build
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js 12.18.3
+        uses: actions/setup-node@v4
+        with:
+          node-version: 12.18.3
+      # cache the dependencies to speed up the build
+      - name: Cache npm Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      # install  Using npm ci is generally faster than running npm i because it caches dependencies
+      - name: Install with npm Dependencies
+        run: npm ci
+      # build
+      - name: Build with npm Project
+        run: npm run build
+      # Deploy to stage environment
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          #github_token: ${{ secrets.TOKEN_OLS_CD }}
+          publish_dir: ./build
