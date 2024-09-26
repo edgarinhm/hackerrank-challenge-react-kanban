@@ -1,0 +1,57 @@
+name: 10 Build pipeline
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  #name of job, free choice, could also give a name
+  build:
+    # required to fix an issue we had when test results failed because
+    # checks: write and pull-requests: write were needed
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+      pull-requests: write
+    # runner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js 12.18.3
+        uses: actions/setup-node@v4
+        with:
+          node-version: 12.18.3
+      # cache the dependencies to speed up the build
+      - name: Cache npm Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      # install  Using npm ci is generally faster than running npm i because it caches dependencies
+      - name: Install with npm Dependencies
+        run: npm ci
+      # build
+      - name: Build with npm Project
+        run: npm run build
+      # test
+      - name: Run with npm test and generate coverage report
+        run: npm test -- --coverage --reporter=junit --outputFile=./test-results/test-output.xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Test-Results
+          path: test-results
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.0.0
+        if: always()
+        with:
+          junit_files: "test-results/**/*.xml"
+      # upload
+      - name: Upload artifact to enable deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-files
+          path: ./build
