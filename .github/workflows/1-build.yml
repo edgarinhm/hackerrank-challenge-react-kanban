@@ -44,11 +44,6 @@ jobs:
         with:
           name: Test-Results
           path: test-results
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2.0.0
-        if: always()
-        with:
-          junit_files: "test-results/**/*.xml"
       # upload
       - name: Upload artifact to enable deployment
         uses: actions/upload-artifact@v4
