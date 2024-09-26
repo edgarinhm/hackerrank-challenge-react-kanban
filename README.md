@@ -44,7 +44,6 @@
 - src/App.test.js
 
 **Install**
-```
 - install: 
 ```bash
 bash npm install
@@ -54,6 +53,7 @@ bash npm install
 - run:
 ```bash
 bash npm start
+```
 - test: 
 ```bash
 bash npm test
