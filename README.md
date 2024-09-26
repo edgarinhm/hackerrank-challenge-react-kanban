@@ -43,16 +43,18 @@
 **Read Only Files**
 - src/App.test.js
 
-**Commands**
-- run: 
-```bash
-bash bin/env_setup && . $HOME/.nvm/nvm.sh && npm start
+**Install**
 ```
 - install: 
 ```bash
-bash bin/env_setup && . $HOME/.nvm/nvm.sh && npm install
+bash npm install
 ```
+
+**Run and Test**
+- run:
+```bash
+bash npm start
 - test: 
 ```bash
-bash bin/env_setup && . $HOME/.nvm/nvm.sh && npm test
+bash npm test
 ```
